@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unshaken Creator Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:#eee;font-family:Arial,sans-serif}
+header{padding:22px;background:#191919;border-bottom:1px solid #333}
+header h1{font-size:22px;margin:0;color:#e6c27a}
+header p{color:#aaa;font-size:12px}
+nav{display:flex;gap:8px;overflow:auto;padding:12px;background:#191919}
+button{background:#292929;color:white;border:1px solid #444;padding:11px 14px;border-radius:7px;cursor:pointer}
+button.active,.primary{background:#b58a43;color:#111;border:none}
+main{padding:18px;max-width:900px;margin:auto}
+.card{background:#1b1b1b;border:1px solid #333;border-radius:10px;padding:17px;margin:12px 0}
+h2{font-size:20px;color:#e6c27a}
+h3{font-size:15px}
+input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;background:#111;color:white;border:1px solid #444;border-radius:7px}
+textarea{min-height:130px;resize:vertical}
+label{font-size:13px;color:#bbb}
+.page{display:none}
+.page.active{display:block}
+.stat{display:inline-block;padding:15px;background:#222;border-radius:8px;margin:5px;min-width:110px}
+.stat strong{display:block;font-size:22px;color:#e6c27a}
+.small{color:#999;font-size:12px}
+.output{white-space:pre-wrap;line-height:1.6;color:#ddd}
+footer{text-align:center;padding:25px;color:#777;font-size:12px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>UNSHAKEN CREATOR STUDIO</h1>
+<p>Think clearly. Create deliberately. Build consistently.</p>
+</header>
+
+<nav>
+<button class="active" onclick="showPage('home',this)">Dashboard</button>
+<button onclick="showPage('ideas',this)">Ideas</button>
+<button onclick="showPage('scripts',this)">Scripts</button>
+<button onclick="showPage('seo',this)">SEO Studio</button>
+<button onclick="showPage('planner',this)">Planner</button>
+</nav>
+
+<main>
+
+<section id="home" class="page active">
+<h2>Creator Dashboard</h2>
+<p class="small">Your creative workspace for The Unshaken Original.</p>
+<div class="stat"><strong>01</strong><span>Workspace</span></div>
+<div class="stat"><strong>05</strong><span>Core tools</span></div>
+<div class="card">
+<h3>Today's mission</h3>
+<input id="mission" placeholder="Write your most important task">
+<button class="primary" onclick="saveMission()">Save mission</button>
+<p id="missionResult" class="output"></p>
+</div>
+<div class="card">
+<h3>Creator principle</h3>
+<p>Stop consuming endlessly. Start creating something valuable.</p>
+</div>
+</section>
+
+<section id="ideas" class="page">
+<h2>Video Idea Studio</h2>
+<label>Choose a content angle</label>
+<select id="angle">
+<option>Stoic wisdom in modern life</option>
+<option>Anime characters and life lessons</option>
+<option>Money and discipline</option>
+<option>Psychology and human behavior</option>
+<option>Practical self-improvement</option>
+</select>
+<button class="primary" onclick="generateIdeas()">Generate ideas</button>
+<div class="card"><div id="ideasOutput" class="output">Your ideas will appear here.</div></div>
+</section>
+
+<section id="scripts" class="page">
+<h2>Script Workspace</h2>
+<label>Video topic</label>
+<input id="topic" placeholder="Example: Why you keep procrastinating">
+<label>Target audience</label>
+<input id="audience" value="Adults interested in self-improvement">
+<label>Video format</label>
+<select id="format">
+<option>Short video</option>
+<option>Long video</option>
+</select>
+<label>Your script</label>
+<textarea id="script" placeholder="Write your hook, main points and ending..."></textarea>
+<button class="primary" onclick="copyText('script')">Copy script</button>
+</section>
+
+<section id="seo" class="page">
+<h2>SEO Studio</h2>
+<label>Video topic</label>
+<input id="seoTopic" placeholder="Enter your video topic">
+<button class="primary" onclick="generateSEO()">Create SEO template</button>
+<div class="card"><div id="seoOutput" class="output">Your SEO suggestions will appear here.</div></div>
+</section>
+
+<section id="planner" class="page">
+<h2>Content Planner</h2>
+<label>Video title</label>
+<input id="planTitle" placeholder="Enter video title">
+<label>Publishing date</label>
+<input id="planDate" type="date">
+<label>Status</label>
+<select id="planStatus">
+<option>Idea</option>
+<option>Writing</option>
+<option>Editing</option>
+<option>Ready</option>
+<option>Published</option>
+</select>
+<button class="primary" onclick="addPlan()">Add to planner</button>
+<div class="card">
+<h3>Your content schedule</h3>
+<div id="planList"></div>
+</div>
+</section>
+
+</main>
+<footer>UNSHAKEN CREATOR STUDIO · BUILD YOUR OWN PATH</footer>
+
+<script>
+function showPage(id,btn){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+}
+function saveMission(){
+let value=document.getElementById('mission').value;
+localStorage.setItem('unshakenMission',value);
+document.getElementById('missionResult').textContent='Saved mission: '+value;
+}
+function generateIdeas(){
+let angle=document.getElementById('angle').value;
+let ideas={
+"Stoic wisdom in modern life":["How to stay calm when life becomes unfair","Stop giving people control over your emotions","The Stoic way to handle rejection"],
+"Anime characters and life lessons":["What Nanami teaches about work and purpose","The discipline behind Sung Jinwoo's transformation","What anime characters teach us about resilience"],
+"Money and discipline":["Why discipline matters more than motivation","The habits that quietly destroy your finances","Build skills before chasing wealth"],
+"Psychology and human behavior":["Why people seek approval","How overthinking steals your time","Why you repeat habits you want to quit"],
+"Practical self-improvement":["How to stop procrastinating today","Build discipline with one small promise","How to focus when everything distracts you"]
+};
+document.getElementById('ideasOutput').textContent=ideas[angle].map((x,i)=>(i+1)+'. '+x).join('\n\n');
+}
+function generateSEO(){
+let topic=document.getElementById('seoTopic').value.trim();
+if(!topic){alert('Enter a video topic first.');return;}
+document.getElementById('seoOutput').textContent=
+'VIDEO TOPIC\n'+topic+
+'\n\nTITLE IDEAS\n1. '+topic+': What You Need to Understand\n2. The Truth About '+topic+
+'\n\nDESCRIPTION\nDiscover practical lessons about '+topic+'. Learn how to apply these ideas in everyday life.\n\nKEYWORD IDEAS\n'+topic+', self improvement, discipline, stoicism, personal growth'+
+'\n\nNote: These are starting points. Check relevance and competition before publishing.';
+}
+function addPlan(){
+let title=document.getElementById('planTitle').value.trim();
+let date=document.getElementById('planDate').value;
+let status=document.getElementById('planStatus').value;
+if(!title){alert('Enter a video title.');return;}
+let plans=JSON.parse(localStorage.getItem('unshakenPlans')||'[]');
+plans.push({title,date,status});
+localStorage.setItem('unshakenPlans',JSON.stringify(plans));
+renderPlans();
+document.getElementById('planTitle').value='';
+}
+function renderPlans(){
+let plans=JSON.parse(localStorage.getItem('unshakenPlans')||'[]');
+document.getElementById('planList').innerHTML=plans.map((p,i)=>
+'<div class="card"><strong>'+escapeHTML(p.title)+'</strong><p class="small">'+escapeHTML(p.date||'No date')+' · '+escapeHTML(p.status)+'</p><button onclick="deletePlan('+i+')">Delete</button></div>'
+).join('')||'No videos planned yet.';
+}
+function deletePlan(i){
+let plans=JSON.parse(localStorage.getItem('unshakenPlans')||'[]');
+plans.splice(i,1);
+localStorage.setItem('unshakenPlans',JSON.stringify(plans));
+renderPlans();
+}
+function escapeHTML(s){
+return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function copyText(id){
+let text=document.getElementById(id).value;
+if(!text){alert('Nothing to copy yet.');return;}
+navigator.clipboard.writeText(text).then(()=>alert('Copied!')).catch(()=>alert('Copy unavailable in this browser.'));
+}
+document.getElementById('mission').value=localStorage.getItem('unshakenMission')||'';
+document.getElementById('missionResult').textContent=localStorage.getItem('unshakenMission')||'';
+renderPlans();
+</script>
+</body>
+</html>
+  
